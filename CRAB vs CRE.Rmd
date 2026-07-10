@@ -1,0 +1,98 @@
+---
+title: "MuGSI"
+output: html_document
+date: "2026-07-10"
+---
+```{r}
+library(tidyverse)
+library(janitor)
+install.packages(c("tidyverse","janitor"))
+raw_data<-read.csv('/Users/santhasatelagi/Downloads/HAI MuGSI.csv')
+glimpse(raw_data)
+dim(raw_data)
+```
+```{r}
+colnames(raw_data)
+data<-raw_data%>%
+  clean_names
+colnames(data)
+```
+
+
+```{r}
+colSums(is.na(data))
+data %>% count(organism)
+data%>% count(topic)
+data%>% count(viewby)
+data%>% count(value)
+data%>% count(year_name)
+```
+```{r}
+crab_data <- data %>%
+  filter(organism=="CRAB")
+glimpse(crab_data)
+```
+```{r}
+trend_by_year <- crab_data %>%
+  filter(topic == "Case Rates", viewby == "All cases") %>%
+  group_by(year_name) %>%
+  summarise(avg_rate = mean(value, na.rm = TRUE))
+
+glimpse(trend_by_year)
+ 
+ggplot(trend_by_year, aes(x = year_name, y = avg_rate)) +
+  geom_line(color = "#1F3864", linewidth = 1) +
+  geom_point(color = "#1F3864", size = 2) +
+  labs(
+    title = "CRAB Case Counts Over Time",
+    x = "Year",
+    y = "Total Cases"
+  ) +
+  theme_minimal()
+```
+```{r}
+cre_data<-data%>%
+filter(organism=="CRE")
+crab_data %>% count(topic)
+crab_data %>% (series)
+crab_data %>% count(series)
+crab_data%>%count(viewby)
+crab_trend<-crab_data %>%
+filter(topic=="case rates", viewby =="All cases")
+glimpse(crab_trend)
+crab_trend<-crab_data %>%
++ filter(topic=="case rates", viewby =="all cases")
+crab_trend<-crab_data %>%
+filter(topic=="case rates", viewby =="all cases")
+> glimpse(crab_trend)
+crab_trend<-crab_data %>%filter(topic=="case rates", viewby =="all cases")
+> glimpse(crab_trend)
+crab_trend<-crab_data %>%
+filter(topic=="Case Rates",viewby=="All Cases")
+glimpse(crab_trend)
+crab_trend<-crab_data%>%
+filter(topic=="Case Rates", viewby=="all cases")
+glimpse(crab_trend)
+crab_trend<-crab_data %>%
+filter(topic=="Case Rates",viewby=="All cases")
+glimpse(crab_trend)
+ggplot(crab_trend,aes(x=year_name, y=value))+geom_line(color="#1F3864",linewidth=1)+geom_point(color="#1F3864",size=2)+labs(title=CRAB Case Rate Over Time (2012-2022)",x="Year",y="Case Rate")+theme_minimal()
+ggplot(crab_trend,aes(x=year_name,y=value))+geom_line(color="#1F3864",linewidth=1)+geom_point(color="#1F3864",size=2)+labs(title="CRAB Case Rate Over Time (2012-2022)",x="Year",y="Case Rate")+theme_minimal()
+cre_trend<-cre_data%>%
+filter(topic=="Case Rates",veiwby=="All cases")
+cre_trend<-cre_data%>%filter(topic=="Case Rates",viewby=="All cases")
+glimpse(crab_trend)
+glimpse(cre_trend)
+ggplot(combined_trend,aes(x=year_name, y=value,color=organism))+geom_line(linewidth=1)+geom_point(size=2)+labs(title="CRAB vs CRE Case Rates Over Time(2012-2022)",x="Year",y="Case Rate",color="Organism")+theme_minimal()
+combined_trend<-data %>%
+filter(topic=="Case Rate",viewby=="All cases")
+glimpse(combined_trend)
+combined_trend<-data %>%
+filter(topic=="Case Rates",viewby=="All cases")
+glimpse(combined_trend)
+ggplot(combined_trend,aes(x=year_name, y=value,color=organism))+geom_line(linewidth=1)+geom_point(size=2)+labs(title="CRAB vs CRE Case Rates Over Time(2012-2022)",x="Year",y="Case Rate",color="Organism")+theme_minimal()
+ggplot(combined_trend,aes(x=year_name, y=value,color=organism))+geom_line(linewidth=1)+geom_point(size=2)+labs(title="CRAB vs CRE Case Rates Over Time(2012-2022)",x="Year",y="Case Rate",color="Organism")+theme_minimal()
+```
+
+```
+
