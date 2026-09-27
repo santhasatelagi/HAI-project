@@ -1,0 +1,64 @@
+# Install once if needed: python -m pip install pandas plotly
+from pathlib import Path
+import pandas as pd
+import plotly.express as px
+
+csv_path = Path.home() / "Desktop/personal proj/HAI MuGSI.csv"
+data = pd.read_csv(csv_path)
+
+# Keep only age-group case-rate rows.
+age = data[(data["Topic"] == "Case Rates") & (data["Viewby"] == "Age")].copy()
+age["YearName"] = pd.to_numeric(age["YearName"])
+age["Value"] = pd.to_numeric(age["Value"])
+
+# Keep the age group with the highest recorded rate for each organism/year.
+leaders = age.loc[
+    age.groupby(["Organism", "YearName"])["Value"].idxmax()
+].sort_values(["Organism", "YearName"])
+
+colors = {
+    "0-18 years": "#087e78",
+    "0-49 years": "#087e78",
+    "19-49 years": "#5c80a3",
+    "50-64 years": "#d77a42",
+    "65-79 years": "#a15c83",
+    "80+ years": "#87973f",
+}
+fig = px.scatter(
+    leaders,
+    x="YearName",
+    y="Series",
+    facet_col="Organism",
+    color="Series",
+    color_discrete_map=colors,
+    custom_data=["Organism", "Series", "Value"],
+    category_orders={
+        "Series": ["0-18 years", "0-49 years", "19-49 years",
+                   "50-64 years", "65-79 years", "80+ years"]
+    },
+    labels={"YearName": "Year", "Series": "Highest-rate age group"},
+    title="Age group with the highest recorded case rate, by year",
+)
+fig.update_traces(
+    marker={"size": 13, "line": {"color": "white", "width": 2}},
+    hovertemplate=(
+        "%{customdata[0]} · %{x}<br>"
+        "Highest-rate age group: %{customdata[1]}<br>"
+        "Recorded case rate: %{customdata[2]}<extra></extra>"
+    ),
+)
+fig.update_xaxes(dtick=1, title="Year")
+fig.update_yaxes(title="Highest-rate age group")
+fig.update_layout(
+    template="plotly_white",
+    legend_title="Age group",
+    title_x=0,
+    margin={"t": 90, "l": 30, "r": 25, "b": 35},
+    annotations=[
+        {"text": "Rates, not diagnosis counts; units and denominators are not supplied.",
+         "xref": "paper", "yref": "paper", "x": 0, "y": 1.12,
+         "showarrow": False, "font": {"size": 12, "color": "#657879"}}
+    ],
+)
+fig.write_html("age-group-case-rate-graph.html", include_plotlyjs=True)
+fig.show()
